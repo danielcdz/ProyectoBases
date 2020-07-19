@@ -1,0 +1,144 @@
+/*body  {
+	background-color: #c9c9c9;
+}*/
+
+
+
+/*.col-sm-3 {
+border-left: thick solid #c9c9c9;
+}
+
+.col-sm-3  p {
+	font-size: small
+}
+.col-sm-6  p {
+	font-size: small
+}*/
+/*footer {
+	background-color: #c9c9c9;
+}*/
+
+.navbar-inverse {
+	background-color: #fff;
+	border-color: green;
+}
+
+
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
+    color: #fff;
+    background-color: green;
+}
+
+.navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
+    background-color: green;
+}
+ 
+.navbar-toggle {
+	background-color: green;
+} 
+
+.line {
+	border-top : thick solid #c9c9c9;
+}
+
+
+
+/*.information-content {
+ background: url(../img/fondo/fondo-about-us.jpg);
+}*/
+
+
+
+
+.title-information {
+	text-align: center;
+	font-size: 45px;
+}
+
+.contenido-information {
+	text-align: center;
+	font-size: 30px;
+}
+
+.title-projets {
+	text-align: center;
+	font-size: 45px;
+	    background-color: rgba(255, 255, 255, 0.64);
+}
+
+.contenido-projets {
+	text-align: center;
+	font-size: 30px;
+	color: white;
+}
+
+.projets-content {
+	/* background-image: url('../img/fondo/tropical-Leaf-Pattern.jpg'); 	 */
+	background-color: navy;
+}
+
+.font-projets {
+	background-color: rgba(38, 79, 49, 0.54);
+}
+
+.color-font-projets {
+	background-color: navy;
+}
+
+.sub-titles-projets {
+	background-color: rgba(0, 0, 0, 0.59);
+	color: white;
+}
+
+
+
+.title-news {
+	text-align: center;
+	font-size: 45px;
+}
+
+.contenido-news {
+	text-align: center;
+	font-size: 30px;
+}
+
+
+
+
+
+.title-donate {
+	text-align: center;
+	font-size: 45px;
+}
+
+.contenido-donate {
+	text-align: center;
+	font-size: 30px;
+}
+
+ hr{ 
+   border:none; 
+ } 
+
+
+ .slider-information    {
+      z-index: 5;
+  position: absolute;
+  background-color: rgba(38, 79, 49, 0.54);
+ }
+
+ .slider-title {
+ 	text-align: center;
+ 	background-color: rgba(255, 255, 255, 0.64);
+ }
+
+ .contenido-slider {
+ 	text-align: center;
+ 	font-size: 30px;
+	color: white;
+ }
+
+/*img.img-responsive {
+	width: 100px; 
+	height: 100px;
+}*/
