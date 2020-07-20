@@ -30,7 +30,7 @@
                       <!-- <p class="card-text">Correo: <?php echo $item['correo'];?></p> -->
                       <p class="card-text">Nombre de la persona a contactar: <?php echo $item['contacto'];?></p>
                       <p class="card-text">Precio: <?php echo $item['precio'];?></p>
-                      <a  href="<?php echo base_url()?>Inicio/mostrarInfoHotel" class="btn btn-success">Habitaciones disponibles</a> 
+                      <a  href="<?php echo base_url("Inicio/mostrarReservacionActividad/".$item['idActividad'])?>" class="btn btn-success">Habitaciones disponibles</a> 
                   </div>
               </div>
           </div>

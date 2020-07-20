@@ -10,27 +10,29 @@
         <table class="table table-striped"  >
             <thead class="thead-light" id="headTabla">
                 <tr>
-                    <th scope="col">ID</th>
                     <th scope="col">Nombre</th>
-                    <th scope="col">Cedula Juridica</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">Direccion</th>
-                    <th scope="col">Telefonos</th>
+                    <th scope="col">Cédula Jurídica</th>
+                    <th scope="col">Dirección</th>
+                    <th scope="col">Teléfonos</th>
                     <th scope="col">Correo</th>
                     
                 </tr>
             </thead>
+
+
             <tbody id="cuerpoTabla">
-                <tr>
-                    <td>1</td>
-                    <td>Hotel Arcangel</td>                    
-                    <td>310187452</td>
-                    <td>Hotel</td>
-                    <td>3km noroeste playa negra,Puerto viejo</td>  
-                    <td>2785-4562</td>
-                    <td>arca@gmail.com</td>  
+            <?php foreach ($listaHoteles as $item):?>
+                    <tr>
+                        <td><?php echo $item['Nombre'];?></td>
+                        <td><?php echo $item['CedulaJuridica'];?></td>                    
+                        <td><?php echo $item['direccion'];?></td>
+                        <td><?php echo $item['telefonos'];?></td>
+                        <td><?php echo $item['CorreoElectronico'];?></td>  
+                        
+                    </tr>
                    
-                </tr>
+                <?php endforeach;?>
+                
                
                 
             </tbody>
@@ -50,22 +52,25 @@
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Nombre de la empresa</th>
-                    <th scope="col">Correo electronico</th>
-                    <th scope="col">Telefono</th>
-                    <th scope="col">Direccion</th>
+                    <th scope="col">Teléfono</th>
+                    <th scope="col">Dirección</th>
                     <th scope="col">Tipo de actividad</th>
                 </tr>
             </thead>
             <tbody id="cuerpoTabla">
-                <tr>
-                    <td>1</td>
-                    <td>Surf with Dave</td>                    
-                    <td>dave@gmail.com</td>
-                    <td>6185-7896</td>
-                    <td>Playa negra,Puerto viejo.</td>  
-                    <td>Clases de surf</td>
-                 
-                </tr>
+
+            <?php foreach ($listaActividades as $item):?>
+                    <tr>
+                        <td><?php echo $item['idActividad'];?></td>
+                        <td><?php echo $item['nombreEmpresa'];?></td>   
+                        <td><?php echo $item['NumeroTelefono'];?></td>
+                        <td><?php echo $item['direccion'];?></td>  
+                        <td><?php echo $item['tipoActividad'];?></td>  
+                        
+                    </tr>
+                   
+                <?php endforeach;?>
+                
 
                 
             </tbody>

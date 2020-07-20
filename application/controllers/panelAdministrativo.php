@@ -177,6 +177,34 @@ class PanelAdministrativo extends CI_Controller {
 
 	
 
+	public function cargarHotelesRegistrados(){
+		$consultaHoteles=$this->db->query("exec ConsultaDatos_Empresa");
+		$datos=$consultaHoteles->result_array();
+		// var_dump($datos);
+		
+		$data['listaHoteles']=$datos;
+		$this->load->vars($data);
+	}
+
+
+	public function cargarActividadesRegistradas(){
+		$consultaActividades=$this->db->query("exec consultaActividadRecreativa");
+		$datos=$consultaActividades->result_array();
+		// var_dump($datos);
+		
+		$data['listaActividades']=$datos;
+		$this->load->vars($data);
+	}
+
+
+	public function cargarTablas(){
+		$this->cargarHotelesRegistrados();
+		$this->cargarActividadesRegistradas();
+	}
+
+
+
+
 
 	public function validarRegistroActividad(){
 		$this->load->helper(array('form', 'url'));
@@ -208,7 +236,9 @@ class PanelAdministrativo extends CI_Controller {
 		$this->load->vars($data); 
 	}
 
+
     public function administrativo(){
+		$this->cargarTablas();
         $this->load->view('headersAdministrativo');
 		$this->load->view('administrativo_view');
 	}

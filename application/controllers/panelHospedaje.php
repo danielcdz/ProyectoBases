@@ -200,8 +200,43 @@ class PanelHospedaje extends CI_Controller {
     }
 
     public function registrarFacturaDB(){
+        $idHabitacion = $this->input->post('numeroHabitacion');
+        $fecha1 = $this->input->post('inputFechaIngreso');
+        $fecha1 = new DateTime($fecha1);
+        $fechaDB=date_format($fecha1, 'Y-m-d');
+        $fecha2 = $this->input->post('inputFecha');
+        $fecha2 = new DateTime($fecha2);
+        $habitacion=$this->db->query("exec consultaHabitacion $idHabitacion"); 
+        $datos=$habitacion->result_array();
+        $fechaSalida=$this->input->post("inputFecha");
+        $fechaSalida = new DateTime($fechaSalida);
+        $fechaSalida=date_format($fechaSalida, 'Ymd');
+        $reserva=$this->db->query("SELECT @@IDENTITY as id"); 
+		$numReserva=$reserva->result_array();
+        $numReserva = array_values($numReserva);
+        $precio = $datos[0]['Precio'];
+        $numeroReserva = $numReserva[0]['id'];
+        $numeroNoches = $fecha2->diff($fecha1)->format("%a");
+        $tipoHabitacion = $datos[0]['Tipo'];
+        $numeroHabitacion = $idHabitacion;
+        $fecha = $fechaDB;
+        $montoTotal = $precio * (int)$numeroNoches;
+
+        // var_dump($numeroReserva,$numeroNoches,$tipoHabitacion,$numeroHabitacion,$fecha,$montoTotal);
         
+        $consulta=$this->db->query("exec agregarFactura $numeroReserva,$numeroNoches,'$tipoHabitacion',$numeroHabitacion,'$fecha',$montoTotal"); 
     }
+
+
+    
+
+
+    public function cargarFacturas(){
+		$consultaFacturas=$this->db->query("exec consultaFactura");
+		$datos=$consultaFacturas->result_array();
+		$data['listaFacturas']=$datos;
+		$this->load->vars($data);
+	}
 
     public function existeNumeroHabitacion($numero){
         $consulta1=$this->db->query("exec validarNumeroHabitacion $numero"); 
@@ -250,6 +285,7 @@ class PanelHospedaje extends CI_Controller {
 
     public function mostrarInicio(){
         $this->cargarVariables();
+        $this->cargarFacturas();
         $this->load->view('headersPanelHospedaje');
         $this->load->view('panelHospedaje_view');
     }

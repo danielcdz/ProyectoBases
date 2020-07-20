@@ -48,7 +48,7 @@ class Inicio extends CI_Controller {
 			else{
             $this->registrarReservacionDB();
             // $this->mostrarReservar();
-			$this->mostrarMensajeExito('Reservación exitosa','Inicio\mostrarReservar');}
+			$this->mostrarMensajeExito('Reservación exitosa','Inicio\mostrarHoteles');}
 		}
 		else{
 
@@ -139,11 +139,27 @@ class Inicio extends CI_Controller {
 		$this->load->vars($data);
 	}
 
+	public function mostrarReservacionActividad(){
+		$idActividad=$this->uri->segment(3);
+		$this->session->set_userdata('idActividad',$idActividad);
+		// var_dump($idActividad);
+		$this->cargarVariables();
+		$this->load->view('headersIAH');
+		$this->load->view('reservacionActividad_view');
+	}
+
+	public function registrarReservacionActividad(){
+		$idActividad=$this->session->userdata('idActividad');
+		// var_dump($idActividad);
+		$fecha = $this->input->post('fechaActividad');
+		$tarjeta = $this->input->post('tarjeta');
+		$consulta=$this->db->query("exec Agregar_ReservarcionActividad $idActividad,'$fecha','$tarjeta'");
+		$this->mostrarMensajeExito('Reservación exitosa','Inicio\mostrarActividades');
+	}
+
 	public function cargarActividadesRegistradas(){
 		$consultaActividades=$this->db->query("exec consultaActividadRecreativa");
 		$datos=$consultaActividades->result_array();
-		// var_dump($datos);
-		
 		$data['listaActividades']=$datos;
 		$this->load->vars($data);
 	}
