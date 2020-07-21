@@ -22,13 +22,13 @@
     </div>
     <div class="form-group col-md-2">
       <label for="numero">Número</label>
-      <input type="text" class="form-control" id="numero" name="numero" required>
+      <input type="number" class="form-control" id="numero" name="numero" required>
       <span class="text-danger"> <?php echo form_error('numero');?> </span>
     </div>
     
     <div class="form-group col-md-2">
       <label for="precio">Precio por noche</label>
-      <input type="text" class="form-control" id="precio"  name="precio"  required>
+      <input type="number" class="form-control" id="precio"  name="precio"  required>
       <span class="text-danger"> <?php echo form_error('precio');?> </span>
     </div>
     

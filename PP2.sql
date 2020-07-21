@@ -1,5 +1,6 @@
-create database DBProyecto;
+create database P2;
 
+use "P2"
 
 --####################################TABLA EMPRESA
 create table Empresa
@@ -140,17 +141,17 @@ BEGIN
 	insert Empresa (CedulaJuridica,Nombre,ReferenciaGPS,CorreoElectronico,TipoEmpresa)
 	VALUES (@CedulaJuridica,@Nombre,@ReferenciaGPS,@CorreoElectronico,@TipoEmpresa)
 END
-execute AgregarEmpresa 265,'Alexus','por ahi','asmalexander@hotmail.com','hostal'
+execute AgregarEmpresa 265,'Alexus','por ahi','asmalexander@hotmail.com','hostal,hotel'
 
 --##################PROCEDURE CONSULTAR DATOS DE LA EMPRESA
 create PROCEDURE ConsultaDatos_Empresa
+	@CedulaEmpresa int
 AS
 BEGIN
-	SELECT  E.CedulaJuridica,Nombre,CorreoElectronico,concat(T.NumeroTelefono1,',',T.NumeroTelefono2) telefonos,concat(DE.provincia,',',DE.canton,',',DE.distrito,',',DE.barrio,',',DE.señasExactas) direccion
-	FROM Empresa E inner join TelefonosEmpresa T on t.CedulaJuridica = E.CedulaJuridica
-	inner join DireccionEmpresa DE on DE.CedulaJuridica= E.CedulaJuridica
+	SELECT distinct Nombre,CorreoElectronico
+	FROM Empresa
+	WHERE @CedulaEmpresa = CedulaJuridica
 END
-
 
 execute ConsultaDatos_Empresa 245
 
@@ -179,7 +180,7 @@ BEGIN
 	VALUES (@CedulaJuridica,@Bar,@Rancho,@Piscina,@Restaurante,@Casino)
 END
 
-execute Agregar_ServiciosEmpresa 245,True,True,False,True,False
+execute Agregar_ServiciosEmpresa 265,True,True,False,True,False
 
 --#######################PROCEDURE PARA CONSULTAR LOS SERVICIOS DE LA EMPRESA
 create PROCEDURE Consulta_ServiciosEmpresa
@@ -197,10 +198,13 @@ BEGIN
 		set @resultado = CONCAT(@resultado,'Restaurante,')
 	IF (SELECT Casino from ServiciosEmpresa where CedulaJuridica = @CedulaJuridica) = 1
 		set @resultado = CONCAT(@resultado,'Casino')
-	SELECT @resultado
+	SELECT @resultado as resultado
 END
 
-execute Consulta_ServiciosEmpresa 245,''
+execute Consulta_ServiciosEmpresa 7777,''
+
+select * from Empresa
+
 
 --###############################TABLA TABLA DE HABITACIONES
 create table TablaHabitaciones
@@ -313,7 +317,7 @@ BEGIN
 	INSERT DireccionEmpresa (CedulaJuridica,provincia, canton, distrito, barrio, señasExactas)
 	VALUES (@CedulaJuridica, @Provincia, @Canton, @Distrito, @Barrio, @Señas_Exactas)
 END
-execute AgregarDireccionEmpresa 245,'Puerto Limon','Limon','Limon Centro','SigloXXI','Por la pulperia 88'
+execute AgregarDireccionEmpresa 265,'Puerto Limon','Limon','Limon Centro','SigloXXI','Por la pulperia 88'
 
 --############################PROCEDURE PARA CONSULTAR DATOS DE LA DIRECCION
 create PROCEDURE ConsultaDireccionEmpresa
@@ -346,7 +350,7 @@ BEGIN
 	insert TelefonosEmpresa (NumeroTelefono1,NumeroTelefono2,CedulaJuridica) values (@NumTelefono1,@NumTelefono1,@CedulaJuridica)
 END
 
-execute AgregarTelefonosEmpresa 67437676,24245345,245
+execute AgregarTelefonosEmpresa 67437676,24245345,265
 
 --###############PROCEDURE Consultar TELEFONOS DE LA EMPRESA
 create PROCEDURE Consulta_TelefonosEmpresa
@@ -358,7 +362,7 @@ BEGIN
 	WHERE @CedulaEmpresa = CedulaJuridica
 END
 
-execute Consulta_TelefonosEmpresa 245
+execute Consulta_TelefonosEmpresa 265
 
 --#######################TABLA CLIENTE
 create table Cliente
@@ -572,26 +576,6 @@ create table ActividadRecreativa(
 	constraint PF_Actividad primary key(idActividad),
 )
 
---##########################PROCEDURE PARA LA CONSULTA DE FILTROS DE LA ACTIVIDAD RECREATIVA
-create PROCEDURE Consulta_FiltrosACTRecreativa
-	@TipoActividad varchar(50) = NULL,
-	@Precio decimal(9,2) = NULL,
-	@Provincia varchar(50) = NULL,
-	@Canton varchar(50) = NULL,
-	@NombreEmpresa varchar(100) = NULL
-AS
-BEGIN
-	SELECT CedulaJuridica,Nombre,CorreoElectronico
-	FROM Empresa EM
-	INNER JOIN ActividadRecreativa AR on EM.CedulaJuridica = AR.CedulaJuridica
-	INNER JOIN Direccion_ACTRecreativa DA on DA.ID_Actividad = AR.idActividad
-	WHERE (@TipoActividad IS NULL OR @TipoActividad like tipoActividad)
-	AND (@Precio IS NULL OR @Precio = precio)
-	AND (@Provincia IS NULL OR @Provincia = provincia)
-	AND (@Canton IS NULL OR @Canton = canton)
-	AND (@NombreEmpresa IS NULL OR @NombreEmpresa = nombreEmpresa)
-	AND (CedulaJuridica IS NOT NULL)
-END
 
 --#################################PROCEDURE PARA AGREGAR UNA ACTIVIDAD RECREATIVA
 create PROCEDURE Agregar_ActividadRecreativa
@@ -601,13 +585,12 @@ create PROCEDURE Agregar_ActividadRecreativa
 	@precio decimal(9,2),
 	@descripcion varchar(255),
 	@tipoActividad varchar(50)
-	@CedulaJuridica numeric,
 AS
 BEGIN
-	insert ActividadRecreativa (nombreEmpresa,contacto,correoElectronico,precio,descripcion,tipoActividad,CedulaJuridica)
-	VALUES (@nombreEmpresa,@contacto,@correoElectronico,@precio,@descripcion,@tipoActividad,@CedulaJuridica)
+	insert ActividadRecreativa (nombreEmpresa,contacto,correoElectronico,precio,descripcion,tipoActividad)
+	VALUES (@nombreEmpresa,@contacto,@correoElectronico,@precio,@descripcion,@tipoActividad)
 END
-
+exec Agregar_ActividadRecreativa 'mambo','jesus','asmalexander@hotmail.com',35463.0,'muy sick','tourmanguito'
 
 --#######################################################33
 create table Direccion_ACTRecreativa(
@@ -630,7 +613,7 @@ BEGIN
 	INSERT Direccion_ACTRecreativa (ID_Actividad,provincia, canton, distrito,señasExactas)
 	VALUES (@ID_Actividad, @Provincia, @Canton, @Distrito,@Señas_Exactas)
 END
-
+exec AgregarDireccion_ACTRecreativa 2,'Limon','Limon','pueblo','por ahi'
 --############################PROCEDURE PARA CONSULTAR DATOS DE LA DIRECCION
 create PROCEDURE ConsultaDireccion_ACTRecreativa
 	@ID_Actividad int
@@ -641,7 +624,45 @@ BEGIN
 	WHERE @ID_Actividad = ID_Actividad
 END
 
+create table Telefonos_ACTRecreativa
+(
+	ID_Telefonos_ACTRecreativa int not null Primary key identity(1,1),
+	NumeroTelefono int,
+	idActividad int not null Foreign key references ActividadRecreativa(idActividad)
+)
+--#####################PROCEDURE PARA AGREGAR UNA LISTA DE TELEFONOS DE ACTIVIDAD RECREATIVA
+create PROCEDURE AgregarTelefonos_ACTRecreativa
+	@NumeroTelefono int,
+	@idActividad int
+AS
+BEGIN
+	insert Telefonos_ACTRecreativa (NumeroTelefono,idActividad)
+	VALUES (@NumeroTelefono,@idActividad)
+END
+exec AgregarTelefonos_ACTRecreativa 5436576,2
 
+--##########################PROCEDURE PARA LA CONSULTA DE FILTROS DE LA ACTIVIDAD RECREATIVA
+create PROCEDURE Consulta_FiltrosACTRecreativa
+	@TipoActividad varchar(50) = NULL,
+	@Precio decimal(9,2) = NULL,
+	@Provincia varchar(50) = NULL,
+	@Canton varchar(50) = NULL,
+	@NombreEmpresa varchar(100) = NULL
+AS
+BEGIN
+	SELECT A.idActividad,A.nombreEmpresa,A.contacto,A.precio,A.descripcion,A.tipoActividad,T.NumeroTelefono,
+	concat(DA.provincia,',',DA.canton,',',DA.señasExactas) as direccion
+	FROM ActividadRecreativa A
+	INNER JOIN Direccion_ACTRecreativa DA on DA.ID_Actividad = A.idActividad
+	INNER JOIN Telefonos_ACTRecreativa T on A.idActividad = T.idActividad
+	WHERE (@TipoActividad IS NULL OR tipoActividad like  '%'+@TipoActividad+'%')
+	AND (@Precio IS NULL OR @Precio = precio)
+	AND (@Provincia IS NULL OR @Provincia = provincia)
+	AND (@Canton IS NULL OR @Canton = canton)
+	AND (@NombreEmpresa IS NULL OR @NombreEmpresa = nombreEmpresa)
+END
+exec Consulta_FiltrosACTRecreativa null,null,null,null,'wow'
+select * from ActividadRecreativa
 
 create table ReservacionActividad
 (
@@ -679,22 +700,6 @@ BEGIN
 END
 
 
-create table Telefonos_ACTRecreativa
-(
-	ID_Telefonos_ACTRecreativa int not null Primary key identity(1,1),
-	NumeroTelefono int,
-	idActividad int not null Foreign key references ActividadRecreativa(idActividad)
-)
---#####################PROCEDURE PARA AGREGAR UNA LISTA DE TELEFONOS DE ACTIVIDAD RECREATIVA
-create PROCEDURE AgregarTelefonos_ACTRecreativa
-	@NumeroTelefono int,
-	@idActividad int
-AS
-BEGIN
-	insert Telefonos_ACTRecreativa (NumeroTelefono,idActividad)
-	VALUES (@NumeroTelefono,@idActividad)
-END
-
 --######################PROCEDURE PARA LA CONSULTA DE DATOS POR FILTROS
 create PROCEDURE Consulta_ReporteFacturado
 	@Fecha1 date = NULL,
@@ -714,9 +719,74 @@ BEGIN
 	AND (@ID_Habitacion IS NULL OR @ID_Habitacion = ID_Habitacion)
 END
 
-execute Consulta_ReporteFacturado null,null,null,'Cabaña',null
+execute Consulta_ReporteFacturado null,null,null,'ña',null
 select * from Factura
 
+
+create PROCEDURE Consulta_FiltrosEmpresa
+	@Provincia varchar(50) = NULL,
+	@Canton varchar(50) = NULL,
+	@Bar bit = NULL,
+	@Rancho bit = NULL,
+	@Piscina bit = NULL,
+	@Restaurante bit = NULL,
+	@Casino bit = NULL,
+	@Tipo varchar(200) = NULL
+AS
+BEGIN
+	SELECT E.CedulaJuridica,Nombre,CorreoElectronico,concat(T.NumeroTelefono1,',',T.NumeroTelefono2) telefonos,
+	concat(DE.provincia,',',DE.canton,',',DE.distrito,',',DE.barrio,',',DE.señasExactas) direccion, E.TipoEmpresa
+	FROM Empresa E
+	INNER JOIN ServiciosEmpresa SE on E.CedulaJuridica = SE.CedulaJuridica
+	INNER JOIN TelefonosEmpresa T on E.CedulaJuridica = T.CedulaJuridica
+	INNER JOIN DireccionEmpresa DE on E.CedulaJuridica = DE.CedulaJuridica
+	WHERE (@Provincia IS NULL OR @Provincia = provincia)
+	AND (@Canton IS NULL OR @Canton = canton)
+	AND (@Bar IS NULL OR @BAR = 1)
+	AND (@Rancho IS NULL OR @Rancho = 1)
+	AND (@Piscina IS NULL OR @Piscina = 1)
+	AND (@Restaurante IS NULL OR @Restaurante = 1)
+	AND (@Casino IS NULL OR @Casino = 1)
+	AND (@Tipo IS NULL OR TipoEmpresa like '%'+@Tipo+'%')
+END
+
+create PROCEDURE Consulta_FiltrosEmpresa
+	@Provincia varchar(50) = NULL,
+	@Canton varchar(50) = NULL,
+	@Bar bit = NULL,
+	@Rancho bit = NULL,
+	@Piscina bit = NULL,
+	@Restaurante bit = NULL,
+	@Casino bit = NULL,
+	@Tipo varchar(200) = NULL
+AS
+BEGIN
+	SELECT E.CedulaJuridica,Nombre,CorreoElectronico,concat(T.NumeroTelefono1,',',T.NumeroTelefono2) telefonos,
+	concat(DE.provincia,',',DE.canton,',',DE.distrito,',',DE.barrio,',',DE.señasExactas) direccion, E.TipoEmpresa
+	FROM Empresa E
+	INNER JOIN ServiciosEmpresa SE on E.CedulaJuridica = SE.CedulaJuridica
+	INNER JOIN TelefonosEmpresa T on E.CedulaJuridica = T.CedulaJuridica
+	INNER JOIN DireccionEmpresa DE on E.CedulaJuridica = DE.CedulaJuridica
+	WHERE (@Provincia IS NULL OR @Provincia = provincia)
+	AND (@Canton IS NULL OR @Canton = canton)
+	AND (@Bar IS NULL OR @Bar = Bar)
+	AND (@Rancho IS NULL OR @Rancho = Rancho)
+	AND (@Piscina IS NULL OR @Piscina = Piscina)
+	AND (@Restaurante IS NULL OR @Restaurante = Restaurante)
+	AND (@Casino IS NULL OR @Casino = Casino)
+	AND (@Tipo IS NULL OR TipoEmpresa like '%'+@Tipo+'%')
+END
+
+select * from ServiciosEmpresa
+exec Consulta_FiltrosEmpresa 'Limon',null,1,null,null,1,null,null
+
+
+
+
+select * from DireccionEmpresa
+exec Consulta_FiltrosEmpresa 'Puerto Limon',null,1,null,null,1,null,null
+
+select * from Empresa
 --#############################PROCEDURE PARA CONSULTA DE REPORTE 2
 create PROCEDURE Consulta_RangoFechas
 	@TiposHabitacion varchar(50)
@@ -738,94 +808,6 @@ BEGIN
 	SELECT extract(YEAR from 
 
 select * from Habitacion
-
-
-
-create procedure consultaFactura
-as
-begin
-select * from Factura
-end
-
-
-	create procedure consultaHabitaciones
-	@cedula numeric
-as
-begin
-	select * from Habitacion H 
-	where H.CedulaJuridica = @cedula and H.Estado=1
-end
-
-	create procedure consultaHabitacion
-	@idhabitacion int
-as
-begin
-	select * from Habitacion H 
-	where H.ID_Habitacion = @idhabitacion 
-end
-
-select * from Empresa
--- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-go
-create procedure validarIdCliente
-	@identificacion int 
-as 
-begin 
-	select Cedula from Cliente where Cedula=@identificacion  
-end
--- *********************************
-go
-create procedure validarCedulaEmpresa
-	@identificacion int 
-as 
-begin 
-	select CedulaJuridica from Empresa where CedulaJuridica=@identificacion  
-end
--- *********************************
-go
-create procedure validarNumeroHabitacion
-	@numero int
-as
-begin
-	select NumHabitacion from Habitacion where ID_Habitacion= @numero
-end
-
--- ********************************
-go
-create procedure consultaUsuario
-	@nombre varchar(50)
-as
-begin
-	select NombreUsuario from Credenciales where NombreUsuario=@nombre
-end
--- *******************************
-go
-create procedure consultaUsuarioClave
-	@nombre varchar(50),
-	@clave varchar(50)
-as 
-begin 
-	select Cedula,NombreUsuario,Clave from Credenciales where NombreUsuario=@nombre and Clave=@clave
-end
-
--- ********************************
-go
-create procedure consultaEmpresa
-	@cedula int 
-as
-begin 
-	select CedulaJuridica,Nombre from Empresa where CedulaJuridica = @cedula
-end 
-
--- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-create procedure consultaActividadRecreativa 
-as
-begin 
-	select A.idActividad,A.nombreEmpresa,A.contacto,A.precio,A.descripcion,A.tipoActividad,T.NumeroTelefono,concat(DA.provincia,',',DA.canton,',',DA.señasExactas) as direccion from ActividadRecreativa A inner join Telefonos_ACTRecreativa T on T.idActividad=A.idActividad
-	inner join Direccion_ACTRecreativa DA on A.idActividad=DA.ID_Actividad
-end
-
 
 
 

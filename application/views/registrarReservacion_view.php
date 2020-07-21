@@ -12,18 +12,18 @@
   <div class="form-row">
     <div class="form-group col-md-2">
       <label for="identificacion">Identificación del cliente</label>
-      <input type="text" class="form-control" id="identificacion" name="identificacion" required>
+      <input type="number" class="form-control" id="identificacion" name="identificacion" required>
       <span class="text-danger"> <?php echo form_error('identificacion');?> </span>
     </div>
     
     <div class="form-group col-md-2">
       <label for="numeroHabitacion">ID de habitación</label>
-      <input type="text" class="form-control" id="numeroHabitacion" name="numeroHabitacion" placeholder="" required>
+      <input type="number" class="form-control" id="numeroHabitacion" name="numeroHabitacion" placeholder="" required>
       <span class="text-danger"> <?php echo form_error('numeroHabitacion');?> </span>
     </div>
     <div class="form-group col-md-2">
       <label for="cantPersonas">Cantidad de personas</label>
-      <input type="text" class="form-control" id="cantPersonas" name="cantPersonas" required>
+      <input type="number" class="form-control" id="cantPersonas" name="cantPersonas" required>
       <span class="text-danger"> <?php echo form_error('cantPersonas');?> </span>
     </div>
     <div class="form-group col-md-2">

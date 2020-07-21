@@ -25,13 +25,13 @@
   </div>
   <div class="form-row">
     <div class="form-group col-md-6">
-      <label for="validationDefault04">Teléfono 1</label>
-      <input type="text" class="form-control" id="telefono1" name="telefono1" required>
+      <label for="validationDefault04">Teléfono </label>
+      <input type="number" class="form-control" id="telefono1" name="telefono1" required>
       <span class="text-danger"> <?php echo form_error('telefono1');?> </span>
     </div>
     <div class="form-group col-md-6">
       <label for="correo">Correo </label>
-      <input type="text" class="form-control" id="correo" name="correo" required>
+      <input type="email" class="form-control" id="correo" name="correo" required>
     </div>
   </div>
   <h5>Dirección</h5>
@@ -90,7 +90,7 @@
     </div>
     <div class="form-group col-md-2">
       <label for="validationDefault04" >Precio</label>
-      <input type="text" class="form-control" id="precio" name="precio" value="$" required>
+      <input type="number" class="form-control" id="precio" name="precio" placeholder="Precio en colones" required>
       <span class="text-danger"> <?php echo form_error('precio');?> </span>
     </div>
   </div>

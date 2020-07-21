@@ -45,7 +45,7 @@
           </div>
           <div class="col-md-6 mb-3">
               <strong><label for="validationDefault04">Número de identificación:</label></strong>
-              <input type="text" class="form-control" id="inputNumeroIdentificacion" name="inputNumeroIdentificacion" value="<?php echo set_value('inputNumeroIdentificacion'); ?>" required/>
+              <input type="number" class="form-control" id="inputNumeroIdentificacion" name="inputNumeroIdentificacion" value="<?php echo set_value('inputNumeroIdentificacion'); ?>" required/>
               <span class="text-danger"> <?php echo form_error('inputNumeroIdentificacion');?> </span>
           </div>
       </div>
@@ -338,12 +338,12 @@
 
         <div class="col-md-4 mb-3">
           <strong><label for="validationDefault04" >Teléfono:</label></strong>
-          <input type="text" class="form-control" id="inputTelefono" name="inputTelefono" value="<?php echo set_value('inputTelefono'); ?>" required />
+          <input type="number" class="form-control" id="inputTelefono" name="inputTelefono" value="<?php echo set_value('inputTelefono'); ?>" required />
           <span class="text-danger"> <?php echo form_error('inputTelefono');?> </span>
       </div>
       <div class="col-md-4 mb-3">
         <strong><label for="validationDefault04" >Correo electrónico:</label></strong>
-        <input type="text" class="form-control" id="inputCorreo" name="inputCorreo"  value="<?php echo set_value('inputCorreo'); ?>" required />
+        <input type="email" class="form-control" id="inputCorreo" name="inputCorreo"  value="<?php echo set_value('inputCorreo'); ?>" required />
         <span class="text-danger"> <?php echo form_error('inputCorreo');?> </span>
     </div>
 

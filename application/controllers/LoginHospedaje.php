@@ -55,7 +55,15 @@ class LoginHospedaje extends CI_Controller {
 
     }
 
+    public function cargarFacturas(){
+		$consultaFacturas=$this->db->query("exec consultaFactura");
+		$datos=$consultaFacturas->result_array();
+		$data['listaFacturas']=$datos;
+		$this->load->vars($data);
+	}
+
     public function mostrarPanelHospedaje(){
+        $this->cargarFacturas();
         $this->load->view('headersPanelHospedaje');
         $this->load->view('panelHospedaje_view');
     }

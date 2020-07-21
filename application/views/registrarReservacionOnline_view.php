@@ -23,7 +23,7 @@
     </div> -->
     <div class="form-group col-md-2">
       <label for="cantPersonas">Cantidad de personas</label>
-      <input type="text" class="form-control" id="cantPersonas" name="cantPersonas">
+      <input type="number" class="form-control" id="cantPersonas" name="cantPersonas">
       <span class="text-danger"> <?php echo form_error('cantPersonas');?> </span>
     </div>
     <div class="form-group col-md-2">
@@ -35,12 +35,12 @@
     </div>
     <div class="form-group col-md-3">
       <label for="inputPassword4">Fecha y Hora de ingreso</label>
-      <input type="datetime-local" class="form-control" id="inputFechaIngreso" name="inputFechaIngreso"/>
+      <input type="datetime-local" class="form-control" id="inputFechaIngreso" name="inputFechaIngreso" required/>
     </div>
     
     <div class="form-group col-md-3">
       <label for="inputPassword4">Fecha y Hora de salida</label>
-      <input type="datetime-local" class="form-control" id="inputFecha" name="inputFecha"/>
+      <input type="datetime-local" class="form-control" id="inputFecha" name="inputFecha" required/>
     </div>
     
   </div>

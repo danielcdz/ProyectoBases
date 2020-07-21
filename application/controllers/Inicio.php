@@ -130,13 +130,145 @@ class Inicio extends CI_Controller {
 		$this->load->view('hoteles_view');
 	}
 
+
+
+	public function filtrarActividades(){
+		$nombre=$this->input->post("nombreEmpresa");
+		$provincia=$this->input->post("inputProvincia");
+		$canton=$this->input->post("canton");
+		$tipo=$this->input->post("tipo");
+		$precio=$this->input->post("precio");
+
+		if($provincia=='')$provincia='null';
+		if($canton=='')$canton='null';
+		if($tipo=='')$tipo='null';
+		if($precio=='')$precio='null';
+		if($nombre=='')$nombre='null';
+
+		$consultaActividades=$this->db->query("exec Consulta_FiltrosACTRecreativa $tipo,$precio,$provincia,$canton,$nombre");
+		$datos=$consultaActividades->result_array();
+		// var_dump($datos);
+		// var_dump($tipo,$precio,$provincia,$canton,$nombre);
+		$data['listaActividades']=$datos;
+		$this->load->vars($data);
+
+
+		$this->cargarVariables();
+		$this->load->view('headersIAH');
+		$this->load->view('actividades_view');
+
+		
+	}
+
+
+	public function filtrarHospedaje(){
+		$provincia=$this->input->post("inputProvincia");
+		$canton=$this->input->post("canton");
+		$tipo=$this->input->post("tipo");
+		$restaurante=$this->input->post("restaurante");
+		$piscina=$this->input->post("piscina");
+		$bar=$this->input->post("bar");
+		$rancho=$this->input->post("rancho");
+		$casino=$this->input->post("casino");
+		$nombre=$this->input->post("nombreHotel");
+
+
+		if($provincia=='')$provincia='null';
+		if($canton=='')$canton='null';
+		if($tipo=='')$tipo='null';
+		 
+		//Valores de servicios
+		if((int)($rancho) != 1){$rancho='null';}else{$rancho=1;}
+		if((int)($piscina) != 1){$piscina='null';}else{$piscina=1;}
+		if((int)($bar) != 1){$bar='null';}else{$bar=1;}
+		if((int)($restaurante) != 1){$restaurante='null';}else{$restaurante=1;}
+		if((int)($casino) != 1){$casino='null';}else{$casino=1;}
+
+		// var_dump($rancho,$piscina,$bar,$restaurante,$casino);
+
+		 $consultaHoteles=$this->db->query("exec Consulta_FiltrosEmpresa $provincia,$canton,$bar,$rancho,$piscina,$restaurante,$casino,$tipo");
+		 $datos=$consultaHoteles->result_array();
+		// var_dump($datos);
+
+
+		$res=array();
+		// $res2=array();
+		// $var = 0;
+		foreach($datos as $item){
+			// var_dump($item);
+			$cedulaJuridica = $item['CedulaJuridica'];
+			$consultaServicios = $this->db->query("exec Consulta_ServiciosEmpresa $cedulaJuridica,''");
+			$servicios=$consultaServicios->result_array();
+			// var_dump($fotos);
+			$servicio = $servicios [0]['resultado'];
+			// var_dump($servicio);
+			array_push($item,$servicio);
+			array_push($res,$item);
+			// $res2 = array_push($res2,$res);
+			// var_dump($item);	
+		}
+		// var_dump($res);
+		// var_dump($datos);
+
+		$data['listaHoteles']=$res;
+		$this->load->vars($data);
+		
+		// $data['listaHoteles']=$datos;
+		// $this->load->vars($data);
+
+		$this->cargarVariables();
+		$this->load->view('headersIAH');
+		$this->load->view('hoteles_view');
+
+		//  $consulta2=$this->db->query("exec Agregar_ServiciosEmpresa $cedula,$bar,$rancho,$piscina,$restaurante,$casino");
+		//  $consulta3=$this->db->query("exec AgregarLista_SitiosWeb '$sitioweb',$cedula");
+		// if($facebook!=null){
+		// 	 $consulta4=$this->db->query("exec AgregarLista_RedesSociales '$facebook',$cedula");}
+		// if($instagram!=null){
+		// 	 $consulta5=$this->db->query("exec AgregarLista_RedesSociales '$instagram',$cedula");}
+		// if($youtube!=null){
+		// 	 $consulta6=$this->db->query("exec AgregarLista_RedesSociales '$youtube',$cedula");}
+		// if($twitter!=null){
+		// 	 $consulta7=$this->db->query("exec AgregarLista_RedesSociales '$twitter',$cedula");}
+		// if($airbnb!=null){
+		// 	 $consulta8=$this->db->query("exec AgregarLista_RedesSociales '$airbnb',$cedula");}
+		
+		// $consulta9=$this->db->query("exec AgregarDireccionEmpresa $cedula,'$provincia','$canton','$distrito','$barrio','$sennas'");
+		// $consulta10=$this->db->query("exec AgregarTelefonosEmpresa $telefono1,$telefono2,$cedula");
+		 
+		
+	}
+
 	public function cargarHotelesRegistrados(){
 		$consultaHoteles=$this->db->query("exec ConsultaDatos_Empresa");
 		$datos=$consultaHoteles->result_array();
 		// var_dump($datos);
 		
-		$data['listaHoteles']=$datos;
+
+
+		$res=array();
+		// $res2=array();
+		// $var = 0;
+		foreach($datos as $item){
+			// var_dump($item);
+			$cedulaJuridica = $item['CedulaJuridica'];
+			$consultaServicios = $this->db->query("exec Consulta_ServiciosEmpresa $cedulaJuridica,''");
+			$servicios=$consultaServicios->result_array();
+			// var_dump($fotos);
+			$servicio = $servicios [0]['resultado'];
+			// var_dump($servicio);
+			array_push($item,$servicio);
+			array_push($res,$item);
+			// $res2 = array_push($res2,$res);
+			// var_dump($item);	
+		}
+		// var_dump($res);
+		// var_dump($datos);
+
+		$data['listaHoteles']=$res;
 		$this->load->vars($data);
+		// $data['listaHabitaciones']=$res;
+		// $this->load->vars($data);
 	}
 
 	public function mostrarReservacionActividad(){

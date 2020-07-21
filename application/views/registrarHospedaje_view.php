@@ -20,24 +20,24 @@
     </div>
     <div class="form-group col-md-6">
       <label for="cedulaJuridica">Cédula Jurídica</label>
-      <input type="text" class="form-control" id="cedulaJuridica" name="cedulaJuridica" value="<?php echo set_value('cedulaJuridica'); ?>"required>
+      <input type="number" class="form-control" id="cedulaJuridica" name="cedulaJuridica" value="<?php echo set_value('cedulaJuridica'); ?>"required>
       <span class="text-danger"> <?php echo form_error('cedulaJuridica');?> </span>
     </div>
   </div>
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="telefono1">Teléfono 1</label>
-      <input type="text" class="form-control" id="telefono1" name="telefono1"value="<?php echo set_value('telefono1'); ?>" required>
+      <input type="number" class="form-control" id="telefono1" name="telefono1"value="<?php echo set_value('telefono1'); ?>" required>
       <span class="text-danger"> <?php echo form_error('telefono1');?> </span>
     </div>
     <div class="form-group col-md-6">
       <label for="telefono2">Teléfono 2</label>
-      <input type="text" class="form-control" id="telefono2" name="telefono2"value="<?php echo set_value('telefono2'); ?>" required>
+      <input type="number" class="form-control" id="telefono2" name="telefono2"value="<?php echo set_value('telefono2'); ?>" required>
       <span class="text-danger"> <?php echo form_error('telefono2');?> </span>
     </div>
     <div class="form-group col-md-6">
       <label for="correo">Correo </label>
-      <input type="text" class="form-control" id="correo" name="correo"value="<?php echo set_value('correo'); ?>" required>
+      <input type="email" class="form-control" id="correo" name="correo"value="<?php echo set_value('correo'); ?>" required>
     </div>
   </div>
   <h5>Dirección</h5>
