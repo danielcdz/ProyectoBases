@@ -4,350 +4,82 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Inicio extends CI_Controller {
 	public function index()
 	{
+			
 		$this->mostrarInicio();
 	}
 
-
-
-	public function mostrarReservar(){
-		$id=$this->uri->segment(3);
-		
-		$this->session->set_userdata('idHabitacion',$id);
-		
-		$this->cargarVariables();
-		
-		$this->load->view('headersIAH');
-		$this->load->view('registrarReservacionOnline_view');
-	}
-
-	// public function validarReservacion(){
-    //     $this->load->helper(array('form', 'url'));
-    //     $this->load->library('form_validation');
-    //     $this->form_validation->set_rules('identificacion', 'identificacion', 'required',array('required' => 'Identificación requerida'));
-    //     $this->form_validation->set_rules('cantPersonas', 'cantPersonas', 'required',array('required' => 'Cantidad de personas requerida'));
-    //     $this->form_validation->set_rules('numeroHabitacion', 'numeroHabitacion', 'required',array('required' => 'Número de habitación requerido'));
-       
-    //     if($this->form_validation->run()){
-	// 		$this->mostrarMensajeExito();
-	// 	}
-	// 	else{
-    //         $this->mostrarReservar();
-	// 	}
-       
-	// }
-
-	public function validarReservacion(){
-        $this->load->helper(array('form', 'url'));
-        $this->load->library('form_validation');
-        $this->form_validation->set_rules('cantPersonas', 'cantPersonas', 'required',array('required' => 'Cantidad de personas requerida'));
-      
-        if($this->form_validation->run()){
-			$usuario=$this->session->userdata('nombreUsuario');
-			if($usuario=='vacio')
-				$this->mostrarLoginUsuario();
-			else{
-            $this->registrarReservacionDB();
-            // $this->mostrarReservar();
-			$this->mostrarMensajeExito('Reservación exitosa','Inicio\mostrarHoteles');}
-		}
-		else{
-
-			$this->mostrarReservar();
-		}
-       
-	}
-
-	public function mostrarMensajeExito($mensaje,$url){
-        $datos = array('mensaje'=>$mensaje,'url'=>$url);
-        // $datos=$consultaHabitaciones->result_array();
-		// var_dump($datos);
-        $data['listaMensaje']=$datos;
-        // var_dump($data);
-        $this->load->vars($data);
-        $this->load->view('mensajeExito');
-    }
-	
-	
-
-    
-
-
-	public function registrarReservacionDB(){
-        // $identificacion=$this->input->post("identificacion");
-		// $numeroHabitacion=$this->input->post("numeroHabitacion");
-		$identificacion=$this->session->userdata('cedulaUsuario');
-		$numeroHabitacion=$this->session->userdata('idHabitacion');
-        $cantPersonas=$this->input->post("cantPersonas");
-        $vehiculo=$this->input->post("inputVehiculo");
-        $fechaSalida=$this->input->post("inputFecha");
-        $fechaSalida = new DateTime($fechaSalida);
-        $fechaSalida=date_format($fechaSalida, 'Ymd H:i:s A');
-        $fechaIngreso=$this->input->post("inputFechaIngreso");
-        $fechaIngreso = new DateTime($fechaIngreso);
-        $fechaIngreso=date_format($fechaIngreso, 'Ymd H:i:s A');
-
-        if($vehiculo=='Si'){$vehiculo=1;}else{$vehiculo=0;}
-        $consulta1=$this->db->query("exec AgregarReservacion $cantPersonas,'$fechaIngreso','$fechaSalida',$numeroHabitacion,$vehiculo,$identificacion"); 
-       
-    }
-
-
-	
-	
-	// public function mostrarMensajeExito(){
-
-    //     $this->load->view('mensajeExito');
-    // }
 
 	public function mostrarInicio(){
-		$this->cargarVariables();
-		$this->load->view('headersIAH');
-		$this->load->view('inicio_view');
+		$this->session->set_flashdata('msg','');
+		$this->consultarContactos();
+		$this->load->view('main_view');
 	}
 
-	public function mostrarActividades(){
-		$this->cargarVariables();
-		$this->cargarActividadesRegistradas();
-		$this->load->view('headersIAH');
-		$this->load->view('actividades_view');
+	public function mostrarInicio2(){
+		$this->consultarContactos();
+		$this->load->view('main_view');
 	}
 
-	public function cerrarSesion(){
-		$this->session->set_userdata('sesionIniciada',0);
-        $this->session->set_userdata('nombreUsuario', 'vacio');
-        $this->session->set_userdata('cedulaUsuario', 0);
-        $data['lista'] = array('nombreUsuario' => 'vacio'); 
-        // var_dump($data['lista']['nombreUsuario']);
-		$this->load->vars($data); 
-		$this->mostrarInicio();
-		
-	}
-
-	public function mostrarHoteles(){
-		$this->cargarVariables();
-		$this->cargarHotelesRegistrados();
-		$this->load->view('headersIAH');
-		$this->load->view('hoteles_view');
+	public function registrarContacto(){
+		$nombre=$this->input->post('nombre');
+		$apellido=$this->input->post('apellido');
+		$telefono1=$this->input->post('telefono1');
+		$telefono2=$this->input->post('telefono2');
+		$correo=$this->input->post('correo');
+		$profesion=$this->input->post('profesion');
+		$datos = array('nombre'=>$nombre,'apellido'=>$apellido,'telefono1'=>$telefono1,'telefono2'=>$telefono2,'correo'=>$correo,'profesion'=>$profesion);
+		$this->mongo_db->insert('contactos', $datos); // insercion de datos
+		$this->session->set_flashdata('msg','Contacto registrado');
+		$this->mostrarInicio2();
 	}
 
 
-
-	public function filtrarActividades(){
-		$nombre=$this->input->post("nombreEmpresa");
-		$provincia=$this->input->post("inputProvincia");
-		$canton=$this->input->post("canton");
-		$tipo=$this->input->post("tipo");
-		$precio=$this->input->post("precio");
-
-		if($provincia=='')$provincia='null';
-		if($canton=='')$canton='null';
-		if($tipo=='')$tipo='null';
-		if($precio=='')$precio='null';
-		if($nombre=='')$nombre='null';
-
-		$consultaActividades=$this->db->query("exec Consulta_FiltrosACTRecreativa $tipo,$precio,$provincia,$canton,$nombre");
-		$datos=$consultaActividades->result_array();
-		// var_dump($datos);
-		// var_dump($tipo,$precio,$provincia,$canton,$nombre);
-		$data['listaActividades']=$datos;
-		$this->load->vars($data);
-
-
-		$this->cargarVariables();
-		$this->load->view('headersIAH');
-		$this->load->view('actividades_view');
-
-		
-	}
-
-
-	public function filtrarHospedaje(){
-		$provincia=$this->input->post("inputProvincia");
-		$canton=$this->input->post("canton");
-		$tipo=$this->input->post("tipo");
-		$restaurante=$this->input->post("restaurante");
-		$piscina=$this->input->post("piscina");
-		$bar=$this->input->post("bar");
-		$rancho=$this->input->post("rancho");
-		$casino=$this->input->post("casino");
-		$nombre=$this->input->post("nombreHotel");
-
-
-		if($provincia=='')$provincia='null';
-		if($canton=='')$canton='null';
-		if($tipo=='')$tipo='null';
-		 
-		//Valores de servicios
-		if((int)($rancho) != 1){$rancho='null';}else{$rancho=1;}
-		if((int)($piscina) != 1){$piscina='null';}else{$piscina=1;}
-		if((int)($bar) != 1){$bar='null';}else{$bar=1;}
-		if((int)($restaurante) != 1){$restaurante='null';}else{$restaurante=1;}
-		if((int)($casino) != 1){$casino='null';}else{$casino=1;}
-
-		// var_dump($rancho,$piscina,$bar,$restaurante,$casino);
-
-		 $consultaHoteles=$this->db->query("exec Consulta_FiltrosEmpresa $provincia,$canton,$bar,$rancho,$piscina,$restaurante,$casino,$tipo");
-		 $datos=$consultaHoteles->result_array();
-		// var_dump($datos);
-
-
-		$res=array();
-		// $res2=array();
-		// $var = 0;
-		foreach($datos as $item){
-			// var_dump($item);
-			$cedulaJuridica = $item['CedulaJuridica'];
-			$consultaServicios = $this->db->query("exec Consulta_ServiciosEmpresa $cedulaJuridica,''");
-			$servicios=$consultaServicios->result_array();
-			// var_dump($fotos);
-			$servicio = $servicios [0]['resultado'];
-			// var_dump($servicio);
-			array_push($item,$servicio);
-			array_push($res,$item);
-			// $res2 = array_push($res2,$res);
-			// var_dump($item);	
-		}
-		// var_dump($res);
-		// var_dump($datos);
-
-		$data['listaHoteles']=$res;
-		$this->load->vars($data);
-		
-		// $data['listaHoteles']=$datos;
-		// $this->load->vars($data);
-
-		$this->cargarVariables();
-		$this->load->view('headersIAH');
-		$this->load->view('hoteles_view');
-
-		//  $consulta2=$this->db->query("exec Agregar_ServiciosEmpresa $cedula,$bar,$rancho,$piscina,$restaurante,$casino");
-		//  $consulta3=$this->db->query("exec AgregarLista_SitiosWeb '$sitioweb',$cedula");
-		// if($facebook!=null){
-		// 	 $consulta4=$this->db->query("exec AgregarLista_RedesSociales '$facebook',$cedula");}
-		// if($instagram!=null){
-		// 	 $consulta5=$this->db->query("exec AgregarLista_RedesSociales '$instagram',$cedula");}
-		// if($youtube!=null){
-		// 	 $consulta6=$this->db->query("exec AgregarLista_RedesSociales '$youtube',$cedula");}
-		// if($twitter!=null){
-		// 	 $consulta7=$this->db->query("exec AgregarLista_RedesSociales '$twitter',$cedula");}
-		// if($airbnb!=null){
-		// 	 $consulta8=$this->db->query("exec AgregarLista_RedesSociales '$airbnb',$cedula");}
-		
-		// $consulta9=$this->db->query("exec AgregarDireccionEmpresa $cedula,'$provincia','$canton','$distrito','$barrio','$sennas'");
-		// $consulta10=$this->db->query("exec AgregarTelefonosEmpresa $telefono1,$telefono2,$cedula");
-		 
-		
-	}
-
-	public function cargarHotelesRegistrados(){
-		$consultaHoteles=$this->db->query("exec ConsultaDatos_Empresa");
-		$datos=$consultaHoteles->result_array();
-		// var_dump($datos);
-		
-
-
-		$res=array();
-		// $res2=array();
-		// $var = 0;
-		foreach($datos as $item){
-			// var_dump($item);
-			$cedulaJuridica = $item['CedulaJuridica'];
-			$consultaServicios = $this->db->query("exec Consulta_ServiciosEmpresa $cedulaJuridica,''");
-			$servicios=$consultaServicios->result_array();
-			// var_dump($fotos);
-			$servicio = $servicios [0]['resultado'];
-			// var_dump($servicio);
-			array_push($item,$servicio);
-			array_push($res,$item);
-			// $res2 = array_push($res2,$res);
-			// var_dump($item);	
-		}
-		// var_dump($res);
-		// var_dump($datos);
-
-		$data['listaHoteles']=$res;
-		$this->load->vars($data);
-		// $data['listaHabitaciones']=$res;
-		// $this->load->vars($data);
-	}
-
-	public function mostrarReservacionActividad(){
-		$idActividad=$this->uri->segment(3);
-		$this->session->set_userdata('idActividad',$idActividad);
-		// var_dump($idActividad);
-		$this->cargarVariables();
-		$this->load->view('headersIAH');
-		$this->load->view('reservacionActividad_view');
-	}
-
-	public function registrarReservacionActividad(){
-		$idActividad=$this->session->userdata('idActividad');
-		// var_dump($idActividad);
-		$fecha = $this->input->post('fechaActividad');
-		$tarjeta = $this->input->post('tarjeta');
-		$consulta=$this->db->query("exec Agregar_ReservarcionActividad $idActividad,'$fecha','$tarjeta'");
-		$this->mostrarMensajeExito('Reservación exitosa','Inicio\mostrarActividades');
-	}
-
-	public function cargarActividadesRegistradas(){
-		$consultaActividades=$this->db->query("exec consultaActividadRecreativa");
-		$datos=$consultaActividades->result_array();
-		$data['listaActividades']=$datos;
+	public function consultarContactos(){
+		$datos=$this->mongo_db->select(array('contactos','nombre','apellido','telefono1','telefono2','correo','profesion'))->get('contactos');
+		$data = ['listaContactos' => $datos, 'msg' => $this->session->flashdata('msg') ];
 		$this->load->vars($data);
 	}
 
-	public function cargarVariables(){
-		$nombreUsuario = $this->session->userdata('nombreUsuario');
-		$data['lista'] = array('nombreUsuario' => $nombreUsuario); 
-		$this->load->vars($data); 
+	public function mostrarFiltrados(){
+		$this->session->set_flashdata('msg','Resultados de la búsqueda:');
+		$this->filtrarContactos();
+		$this->load->view('main_view');
 	}
 
-
-	public function mostrarInfoHotel(){
-		$this->cargarVariables();
-		$this->consultaHabitaciones();
-		$this->load->view('headersIAH');
-		$this->load->view('infoHospedaje_view');
-	}
-
-	public function consultaHabitaciones(){
-		$cedulaHotel=$this->uri->segment(3);
-		$this->session->set_userdata('cedulaHotel',$cedulaHotel);
-		$consultaHabitaciones=$this->db->query("exec consultaHabitaciones $cedulaHotel");
-		$datos=$consultaHabitaciones->result_array();
-		$res=array();
-		// $res2=array();
-		// $var = 0;
-		foreach($datos as $item){
-			$idHabitacion = $item['ID_Habitacion'];
-			$consultaFotografias = $this->db->query("exec Consulta_ListaFotografias $idHabitacion");
-			$fotos=$consultaFotografias->result_array();
-			// var_dump($fotos);
-			$foto = $fotos [0]['FotosHabitacion'];
-			array_push($item,$foto);
-			array_push($res,$item);
-			// $res2 = array_push($res2,$res);
-			// var_dump($item);	
-		}
-		// var_dump($res);
-		// var_dump($datos);
-		$data['listaHabitaciones']=$res;
+	public function filtrarContactos(){
+		$nombre=$this->input->post('nombreFiltrar');
+		// var_dump($nombre);
+		// $datos=$this->mongo_db->like($nombre,'nombre', 'im', FALSE, false)->get('contactos');
+		$datos=$this->mongo_db->where_or(array('nombre' => $nombre,'apellido'=>$nombre))->get('contactos');
+		$data = ['listaContactos' => $datos, 'msg' => $this->session->flashdata('msg') ];
 		$this->load->vars($data);
-		
+		// var_dump($datos);	
 	}
 
 
-	public function mostrarLoginAdministrativo(){
-		$this->load->view('login_administrativo');
+	public function eliminarContacto(){
+		$id=$this->uri->segment(3);
+		$this->mongo_db->where(array('_id' => new MongoDB\BSON\ObjectId ($id )))->delete('contactos');
+		$this->session->set_flashdata('msg','Contacto eliminado');
+		// var_dump($id);
+		$this->mostrarInicio2();
 	}
 
-	public function mostrarLoginHospedaje(){
-		$this->load->view('login_hospedaje');
-	}
 
-	public function mostrarLoginUsuario(){
-		$this->load->view('loginUsuario_view');
+	public function editarContacto(){
+		$id=$this->uri->segment(3);
+		$nombre=$this->input->post('nombreE');
+		$apellido=$this->input->post('apellidoE');
+		$telefono1=$this->input->post('telefono1E');
+		$telefono2=$this->input->post('telefono2E');
+		$correo=$this->input->post('correoE');
+		$profesion=$this->input->post('profesionE');
+		$this->mongo_db->where(array('_id'=>new MongoDB\BSON\ObjectId ($id )))->set(array('nombre'=>$nombre,'apellido'=>$apellido,'telefono1'=>$telefono1,'telefono2'=>$telefono2,'correo'=>$correo,'profesion'=>$profesion))->update('contactos');
+		$this->session->set_flashdata('msg','Información de contacto actualizada');
+		$this->mostrarInicio2();
 	}
 
 	
+
+
 }
