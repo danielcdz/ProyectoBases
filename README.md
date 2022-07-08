@@ -1,3 +1,3 @@
 # API
 
-[Link](/README.rst)
+[Link](/readme.rst)
